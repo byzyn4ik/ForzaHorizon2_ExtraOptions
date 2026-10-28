@@ -64,12 +64,16 @@ python tools/test-map-zoom.py out/winmm-test.dll
 python tools/test-exit-game.py out/winmm-test.dll <game>/Mount/media/UI.zip
 python tools/test-time-weather.py out/winmm-test.dll /path/to/Mount/media/UI.zip
 python tools/test-smooth-menus.py out/winmm-test.dll
+python tools/test-custom-language.py out/winmm-test.dll [VoiceSubtitles.str]
 ```
 
 `test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the
 game's own `A_PauseOptions.xaml` and `A_VideoOptions.xaml` (read from the
 game's `media/UI.zip`) and round-trips options and key bindings through
 `[KeyboardMouse]`.
+
+The optional `VoiceSubtitles.str` (for example from a real language pack) is
+read as well.
 
 ## FPS counter
 
@@ -86,6 +90,19 @@ its GetProcAddress), and loads the monitor right after the first device is
 created, outside the loader lock. The monitor hooks the swap chain's Present,
 Present1 and SetColorSpace1 and the queue's ExecuteCommandLists, and reads GPU
 load and video memory through PDH on one worker thread.
+
+## Voice subtitle hook code
+
+`features/voice_subtitles_code.h` is generated from
+`tools/voice_subtitles/voice_hooks.py` (needs `pip install keystone-engine`):
+
+```text
+python tools/voice_subtitles/gen_voice_code.py
+```
+
+The code is assembled for one address and carries a relocation table, so it
+runs from free memory near the game image (`VOICE: hook code at 0x...` in the
+log).
 
 ## Patch data
 

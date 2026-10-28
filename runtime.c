@@ -1,6 +1,7 @@
 #include "runtime.h"
 #include "features.h"
 #include "features/addons.h"
+#include "features/custom_language.h"
 #include "features/plugins.h"
 #include "features/controller_pause.h"
 #include "features/radio_station.h"
@@ -89,6 +90,8 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
     }
     plugins_configure(game_image, executable_path, initialized && options.enabled);
     if (initialized) {
+        /* Before patching: a custom language pack also needs the media mount hook. */
+        custom_language_prepare(executable_path, settings_directory);
         initialized = patch_engine_apply(game_image, &options);
     }
     log_start(settings_directory, &options);
@@ -138,6 +141,7 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         if (options.smooth_menus) {
             smooth_menus_install(game_image);
         }
+        custom_language_install(game_image);
     }
     return initialized;
 }

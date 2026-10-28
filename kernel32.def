@@ -17,6 +17,7 @@ EXPORTS
     VirtualAlloc
     VirtualFree
     GetPrivateProfileIntW
+    GetUserDefaultLocaleName
     WriteFile
     ReadProcessMemory
     VirtualQuery
