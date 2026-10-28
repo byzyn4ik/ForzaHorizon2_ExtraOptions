@@ -33,6 +33,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - Quick car scan in photo mode, ported from Forza Horizon 6 (optional, off by default).
  - "Return to Garage" button in the pause menu.
  - Exit Game in the pause menu (optional, off by default).
+ - Time of day and weather for the open world from a World tile in the pause menu (optional, off by default).
  - Aero tuning without equipping Forza Aero parts.
  - New rim style category with all aftermarket rims.
  - Toggle for having the minimap follow the orbit camera.
@@ -168,6 +169,22 @@ Off by default. The game has no way to quit from its menus. With this on, the pa
 [Frontend]
 ExitGame=1
 ```
+
+### Time of Day and Weather
+Off by default. With this on, the pause menu's Settings page gets a World tile under Team Credits. It opens a World page with two rows that apply at once in the open world:
+ - Time of Day: Default, Sunrise, Midday, Sunset, Midnight. A chosen time stops the clock there.
+ - Weather: Default, Clear, Wet, Rain, Storm.
+
+Default is the game's own time and weather; nothing is overridden. The choices are kept in the INI and applied again on the next start:
+```ini
+[Frontend]
+WorldMenu=1
+
+[World]
+TimeOfDay=game
+Weather=game
+```
+TimeOfDay takes game, sunrise, midday, sunset or midnight; Weather takes game, sunny, wet, rain or storm. The [World] values are used only while WorldMenu is 1.
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.

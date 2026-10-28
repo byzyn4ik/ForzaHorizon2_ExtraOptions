@@ -10,6 +10,7 @@
 #include "features/map_zoom.h"
 #include "features/exit_game.h"
 #include "features/video_settings.h"
+#include "features/world_menu.h"
 #include "logging.h"
 #include "patch_engine.h"
 #include "settings.h"
@@ -126,6 +127,11 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         // [Frontend] ExitGame (off by default): Car Packs closes the game.
         if (options.exit_game) {
             exit_game_install(game_image);
+        }
+        // [Frontend] WorldMenu (off by default): the World tile and the time of
+        // day and weather hooks; nothing is hooked while it is off.
+        if (options.world_menu) {
+            world_menu_install(game_image, options.world_time, options.world_weather);
         }
     }
     return initialized;

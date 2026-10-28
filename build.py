@@ -83,6 +83,8 @@ COMMON_SOURCES = [
     "features/car_preview_rebuild.c",
     "features/map_zoom.c",
     "features/exit_game.c",
+    "features/time_weather.c",
+    "features/world_menu.c",
     "features/offline_events.c",
     "features/custom_showcases.c",
     "features/offline_event_division.c",

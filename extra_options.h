@@ -103,5 +103,6 @@ typedef struct {
     int photo_quick_scan;
     int car_preview_scale;
     int exit_game;
+    int world_menu, world_time, world_weather;
 } ModOptions;
 #endif

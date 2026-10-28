@@ -6,7 +6,8 @@
 
 typedef enum { SETTING_BOOLEAN, SETTING_MSAA, SETTING_PHOTO_SAMPLES,
                SETTING_LIVERY_COUNT, SETTING_TURBO_INTERVAL,
-               SETTING_PREVIEW_SCALE } SettingType;
+               SETTING_PREVIEW_SCALE, SETTING_TIME_OF_DAY,
+               SETTING_WEATHER } SettingType;
 
 typedef struct {
     const char *section;
@@ -24,5 +25,8 @@ int settings_read(const wchar_t *directory, ModOptions *options);
 int settings_value(const ModOptions *options, const SettingDefinition *definition);
 /* [KeyboardMouse], read with the rest of FH2_ExtraOptions.ini. */
 const KbmSettings *settings_keyboard_mouse(void);
+/* [World] TimeOfDay (0) or Weather (1), as its value name, in
+   FH2_ExtraOptions.ini; 1 when written. */
+int settings_write_world(unsigned setting, int value);
 
 #endif

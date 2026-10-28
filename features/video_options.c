@@ -12,6 +12,7 @@
 #include "bindings.h"
 #include "kbm_menu.h"
 #include "exit_game.h"
+#include "world_menu.h"
 
 #define RESOURCE_THUNK_RVA 0x13fe354u
 #define RESET_SLOT_RVA (0x2e60370u + 0x590u)
@@ -98,14 +99,18 @@ enum {
     CHOICES_DRIVER_VISIBILITY,
     CHOICES_PHOTO_TIME,
     CHOICES_PHOTO_WEATHER,
+    CHOICES_WORLD_TIME,
+    CHOICES_WORLD_WEATHER,
     CHOICE_COLLECTION_COUNT
 };
 
 enum { PHOTO_DRIVER_PROPERTY=VIDEO_SETTING_COUNT+CHOICE_COLLECTION_COUNT,
-       PHOTO_TIME_PROPERTY,PHOTO_WEATHER_PROPERTY,PHOTO_LIGHTS_PROPERTY };
+       PHOTO_TIME_PROPERTY,PHOTO_WEATHER_PROPERTY,PHOTO_LIGHTS_PROPERTY,
+       // The World page (world_menu.c).
+       WORLD_TIME_PROPERTY,WORLD_WEATHER_PROPERTY };
 // Keyboard & mouse page rows (kbm_menu.c): their values, then one choice
 // collection per row. Registered only while kbm_menu.c is installed.
-enum { KBM_FIRST_PROPERTY = PHOTO_LIGHTS_PROPERTY + 1,
+enum { KBM_FIRST_PROPERTY = WORLD_WEATHER_PROPERTY + 1,
        KBM_CHOICES_PROPERTY = KBM_FIRST_PROPERTY + KBM_MENU_ROWS,
        PROPERTY_COUNT = KBM_CHOICES_PROPERTY + KBM_MENU_ROWS };
 
@@ -120,10 +125,13 @@ static PropertyChanged property_changed;
 static NativeProperty properties[PROPERTY_COUNT];
 static NativePropertyLink links[SETTINGS_PAGE_COUNT][PROPERTY_COUNT];
 static void *choices[CHOICE_COLLECTION_COUNT + KBM_MENU_ROWS];
-static const unsigned choice_counts[] = {3, 2, 6, 2, 3, 2, 3, 2, 2, 2, 4, 4, 0, 2, 5, 1};
+static const unsigned choice_counts[] = {3, 2, 6, 2, 3, 2, 3, 2, 2, 2, 4, 4, 0, 2, 5, 1, 5, 5};
+_Static_assert(ARRAY_COUNT(choice_counts) == CHOICE_COLLECTION_COUNT, "Choice counts");
 static void *registered_image[SETTINGS_PAGE_COUNT], *initialized_image;
 // The open Video page was built as the KEYBOARD & MOUSE page (kbm_menu.c).
 static int keyboard_page;
+// The open Video page was built as the World page (world_menu.c).
+static int world_page;
 static void *resource_vtable[7];
 static unsigned char resource_thunk[12], reset_original[8], reset_callback[8],
     hud_reset_original[8], hud_reset_callback[8], audio_reset_original[8], audio_reset_callback[8],
@@ -199,10 +207,15 @@ static const char *const property_names[] = {"DriftMode",
                                              "PhotoDriverChoices",
                                              "PhotoTimeChoices",
                                              "PhotoWeatherChoices",
+                                             "WorldTimeChoices",
+                                             "WorldWeatherChoices",
                                              "PhotoDriver",
                                              "PhotoTimeOfDay",
                                              "PhotoWeather",
-                                             "PhotoLights"};
+                                             "PhotoLights",
+                                             "WorldTimeOfDay",
+                                             "WorldWeather"};
+_Static_assert(ARRAY_COUNT(property_names) == KBM_FIRST_PROPERTY, "Property names");
 
 static const char *property_name(unsigned index) {
     if (index < KBM_FIRST_PROPERTY) {
@@ -344,7 +357,11 @@ static void **get_value(void **output, NativeProperty *property, void *page) {
     if (index >= KBM_FIRST_PROPERTY && index < PROPERTY_COUNT) {
         return keyboard_value(output, index, page);
     }
-    if(index>=PHOTO_DRIVER_PROPERTY && index<KBM_FIRST_PROPERTY){
+    if(index>=WORLD_TIME_PROPERTY && index<KBM_FIRST_PROPERTY){
+        int value=world_menu_get(index-WORLD_TIME_PROPERTY);
+        return box_int(output,&value);
+    }
+    if(index>=PHOTO_DRIVER_PROPERTY && index<WORLD_TIME_PROPERTY){
         int value=index==PHOTO_DRIVER_PROPERTY?driver_photo_get():photo_environment_get(index-PHOTO_TIME_PROPERTY);
         return box_int(output,&value);
     }
@@ -402,6 +419,10 @@ static void set_value(NativeProperty *property, void *page, void *boxed) {
             value = (int)(number * 2 + 0.5f);
         }
     }
+    if(index>=WORLD_TIME_PROPERTY){
+        if(world_menu_set(index-WORLD_TIME_PROPERTY,value))property_changed(page,property);
+        return;
+    }
     if(index==PLAYER_CHARACTER){value=driver_model_id((unsigned)value);if(value<0)return;}
     if (index==PHOTO_DRIVER_PROPERTY ? driver_photo_set(value)
         : index>=PHOTO_TIME_PROPERTY ? photo_environment_set(index-PHOTO_TIME_PROPERTY,value)
@@ -422,6 +443,10 @@ static const wchar_t *choice_text(unsigned collection, unsigned index) {
         }
         case CHOICES_PHOTO_TIME:
         case CHOICES_PHOTO_WEATHER:return index?NULL:text->default_choice;
+        case CHOICES_WORLD_TIME:
+        case CHOICES_WORLD_WEATHER:
+            return index?photo_environment_world_label(collection-CHOICES_WORLD_TIME,index)
+                        :text->default_choice;
         case CHOICES_DRIVER_VISIBILITY:return index?text->choices[2]:text->default_choice;
         case CHOICES_POWER_UNITS: {
             static const wchar_t *const names[] = {NULL, L"hp", L"PS", L"kW"};
@@ -468,9 +493,10 @@ static int make_choices(unsigned collection) {
         *(void **)((unsigned char *)items + offsets[i]) = image + vtables[i];
     }
     unsigned keyboard_row = collection - CHOICE_COLLECTION_COUNT;
+    int photo=collection==CHOICES_PHOTO_TIME || collection==CHOICES_PHOTO_WEATHER;
     unsigned count=collection>=CHOICE_COLLECTION_COUNT?kbm_menu_choice_count(keyboard_row):
         collection==CHOICES_CHARACTER?driver_model_count():
-        collection>=CHOICES_PHOTO_TIME?photo_environment_count(collection-CHOICES_PHOTO_TIME):choice_counts[collection];
+        photo?photo_environment_count(collection-CHOICES_PHOTO_TIME):choice_counts[collection];
     for (unsigned index = 0; index < count; ++index) {
         void *label = NULL;
         if (collection >= CHOICE_COLLECTION_COUNT) {
@@ -478,7 +504,7 @@ static int make_choices(unsigned collection) {
             if (text) {
                 ((MakeString)(image + NATIVE_MAKE_STRING))(&label, text);
             }
-        } else if(collection>=CHOICES_PHOTO_TIME && index){
+        } else if(photo && index){
             ((MakeString)(image+NATIVE_MAKE_STRING))(&label,photo_environment_label(collection-CHOICES_PHOTO_TIME,index));
         }else ((MakeString)(image + NATIVE_MAKE_STRING))(&label, choice_text(collection, index));
         if (!label) {
@@ -514,7 +540,8 @@ static int register_properties(unsigned page) {
         }
     }
     for (unsigned index = 0; index < ARRAY_COUNT(properties); ++index) {
-        if (!property_name(index)) {
+        if (!property_name(index) ||
+            (index >= WORLD_TIME_PROPERTY && index < KBM_FIRST_PROPERTY && !world_menu_installed())) {
             continue;
         }
         int collection = index >= KBM_CHOICES_PROPERTY ||
@@ -561,6 +588,15 @@ static void reset_page(void *page, unsigned kind) {
         }
         return;
     }
+    if (kind == VIDEO_PAGE && world_page) {
+        // The World page's reset returns time of day and weather to the game's.
+        for (unsigned index = WORLD_TIME_PROPERTY; index < KBM_FIRST_PROPERTY; ++index) {
+            if (world_menu_set(index - WORLD_TIME_PROPERTY, 0) && registered_image[kind] == image) {
+                property_changed(page, &properties[index]);
+            }
+        }
+        return;
+    }
     (kind == DIFFICULTY_PAGE ? native_difficulty_reset
      : kind == AUDIO_PAGE    ? native_audio_reset
      : kind == HUD_PAGE      ? native_hud_reset
@@ -580,7 +616,7 @@ void video_options_photo_refresh(void *page) {
         void *old=choices[CHOICES_PHOTO_WEATHER];
         if(make_choices(CHOICES_PHOTO_WEATHER))release_object(old);
         property_changed(page,&properties[VIDEO_SETTING_COUNT+CHOICES_PHOTO_WEATHER]);
-        for(unsigned i=PHOTO_DRIVER_PROPERTY;i<KBM_FIRST_PROPERTY;++i)property_changed(page,&properties[i]);
+        for(unsigned i=PHOTO_DRIVER_PROPERTY;i<=PHOTO_LIGHTS_PROPERTY;++i)property_changed(page,&properties[i]);
     }
 }
 
@@ -637,8 +673,12 @@ static void **get_resource(void *reader, void **output) {
                 : NULL;
     int make_grid = original && original->bytes && original->length > 0 &&
                     manufacturer_jump_is_xaml(original->bytes, original->length);
-    int hub = !logo && original->length <= (int)(XAML_LIMIT / 2) &&
-              kbm_menu_is_hub_xaml(original->bytes, (size_t)original->length);
+    int keyboard_hub = !logo && original->length <= (int)(XAML_LIMIT / 2) &&
+                       kbm_menu_is_hub_xaml(original->bytes, (size_t)original->length);
+    // [Frontend] WorldMenu: the Settings hub gets the World tile.
+    int world_hub = !logo && original->length <= (int)(XAML_LIMIT / 2) &&
+                    world_menu_is_hub_xaml(original->bytes, (size_t)original->length);
+    int hub = keyboard_hub || world_hub;
     if (!original || original->length <= 0 ||
         (original->length > (int)(XAML_LIMIT / 2) && !pause_layout && !results_layout) || !original->bytes ||
         (!results_layout && !photo_layout && !pause_layout && !make_grid && !logo && !footer &&
@@ -697,14 +737,32 @@ static void **get_resource(void *reader, void **output) {
         length = original->length + sizeof(uniform) - 1;
         bytes[length] = 0;
     } else if (hub) {
-        length = kbm_menu_hub_xaml(image, original->bytes, (size_t)original->length, bytes,
-                                   XAML_LIMIT);
+        length = keyboard_hub ? kbm_menu_hub_xaml(image, original->bytes, (size_t)original->length,
+                                                  bytes, XAML_LIMIT)
+                              : 0;
+        if (world_hub && length) {
+            // Both tiles: the World tile is added to the KEYBOARD & MOUSE copy.
+            char *first = allocate(length + 1);
+            if (first) {
+                memory_copy(first, bytes, length + 1);
+                size_t both = world_menu_extend_hub_xaml(image, first, length, bytes, XAML_LIMIT);
+                if (!both) {
+                    memory_copy(bytes, first, length + 1);
+                }
+                free_object(first);
+                length = both ? both : length;
+            }
+        } else if (world_hub) {
+            length = world_menu_extend_hub_xaml(image, original->bytes, (size_t)original->length,
+                                                bytes, XAML_LIMIT);
+        }
     } else {
         length = 0;
         if (video_options_page(original->bytes, original->length) == VIDEO_PAGE) {
-            // The KEYBOARD & MOUSE tile opens the Video page; it is built with
-            // the keyboard & mouse rows instead.
+            // The KEYBOARD & MOUSE and World tiles open the Video page; it is
+            // built with the keyboard & mouse rows or as the World page instead.
             keyboard_page = kbm_menu_take_request();
+            world_page = world_menu_take_request();
 #ifdef FH2_AZIMUTH
             if (keyboard_page) {
                 length = video_options_keyboard_xaml(image, original->bytes, original->length,
@@ -717,6 +775,16 @@ static void **get_resource(void *reader, void **output) {
                                            "shown instead.\r\n");
             }
 #endif
+            if (keyboard_page) {
+                world_page = 0;
+            } else if (world_page) {
+                length = video_options_world_xaml(image, original->bytes, original->length, bytes,
+                                                  XAML_LIMIT);
+                world_page = length != 0;
+                log_append(world_page ? "WORLD MENU: World page built from the Video page.\r\n"
+                                      : "WORLD MENU: Video page layout did not match; Video page "
+                                        "shown instead.\r\n");
+            }
         }
         if (!length) {
             length = video_options_extend_xaml(image, original->bytes, original->length, bytes,
@@ -807,6 +875,11 @@ __declspec(dllexport) void *Fh2TestVideoResourceHookAddress(void) {
 __declspec(dllexport) size_t Fh2TestVideoXaml(const char *text, size_t length, char *out,
                                               size_t capacity) {
     return video_options_extend_xaml(image, text, length, out, capacity);
+}
+
+__declspec(dllexport) size_t Fh2TestWorldXaml(const char *text, size_t length, char *out,
+                                              size_t capacity) {
+    return video_options_world_xaml(image, text, length, out, capacity);
 }
 
 __declspec(dllexport) void *Fh2TestVideoProperty(unsigned index) {

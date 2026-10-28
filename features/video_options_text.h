@@ -46,6 +46,8 @@ typedef struct {
     const char *kbm_reset, *kbm_reset_description;
     const wchar_t *kbm_labels[KBM_LABEL_COUNT];
     const wchar_t *exit_game;
+    const wchar_t *world;
+    const char *world_descriptions[2];
 } VideoOptionsText;
 
 const VideoOptionsText *video_options_text(unsigned char *game_image);
