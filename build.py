@@ -79,6 +79,8 @@ COMMON_SOURCES = [
     "features/controller_pause.c",
     "features/radio_station.c",
     "features/photo_scan.c",
+    "features/car_previews.c",
+    "features/car_preview_rebuild.c",
     "features/offline_events.c",
     "features/custom_showcases.c",
     "features/offline_event_division.c",

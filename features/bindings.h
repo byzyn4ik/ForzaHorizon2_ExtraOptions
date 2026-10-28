@@ -19,6 +19,7 @@ typedef enum {
     BIND_RADIO_STATION,
     BIND_RADIO_NEXT,
     BIND_RADIO_RESTART,
+    BIND_REBUILD_CAR_PREVIEWS,
     BIND_COUNT
 } GameAction;
 

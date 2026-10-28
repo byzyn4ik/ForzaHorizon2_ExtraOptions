@@ -27,6 +27,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - All DLC packs properly unlocked.
  - VIP status & "Treasure Map" unlocks.
  - Toggle for 4K liveries w/ enhanced sampling.
+ - Sharper garage car pictures (optional, off by default).
  - Unrestricted Photo Mode.
  - Quick car scan in photo mode, ported from Forza Horizon 6 (optional, off by default).
  - "Return to Garage" button in the pause menu.
@@ -129,6 +130,14 @@ Off by default. A port of Forza Horizon 6's quick car scan: RB in photo mode cre
 QuickCarScan=1
 ```
 RB (shown as "Scan cars" in the help bar) opens the game's own photo analysis for the current camera: the same car detection, payout and "Cars photographed" result as after a real photo, but nothing is captured or saved. It answers RB only in the camera and hidden-UI views; RB keeps its usual job in the effects panel and before saving.
+
+### Car Previews
+Off by default. The pictures of your own cars in My Cars and the car strip are rendered at the console's 816x459 (and 192x108), which looks soft at 1440p and 4K. Set a scale in `FH2_ExtraOptions.ini`:
+```ini
+[Graphics]
+CarPreviewScale=2   ; 1 (default) = console size, 2-4 = that many times larger
+```
+2 is pixel for pixel in the My Cars panel at 2160p. It applies to pictures the game makes after startup (a car bought, painted or upgraded). To redraw the pictures you already have, press F8 (`[Bindings]` `RebuildCarPreviews`): every car with a saved picture is rendered again through the game's own background save. Stock cars use the game's packaged pictures and are not affected. Larger scales make the save larger (2 has four times the pixels).
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.

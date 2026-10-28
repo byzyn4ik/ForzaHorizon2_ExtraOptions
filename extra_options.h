@@ -101,5 +101,6 @@ typedef struct {
     int all_transmission_swaps;
     int controller_pause_on_unplug_only;
     int photo_quick_scan;
+    int car_preview_scale;
 } ModOptions;
 #endif

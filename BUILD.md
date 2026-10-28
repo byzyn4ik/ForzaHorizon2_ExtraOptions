@@ -37,6 +37,8 @@ pointer is shown it sets the game window's class cursor.
 The custom radio station (off by default) loads User32 (for its keys) and the
 system MP3 codec (msacm32) lazily when enabled; with PcmDecode=1 one worker
 thread decodes the next tracks ahead.
+Car previews (off by default) rewrite the thumbnail sizes in place; their F8
+rebuild adds one small executable stub (VirtualAlloc) for its per-frame hook.
 
 Both adapters initialize synchronously in `DllMain`. Startup performs simple
 configuration I/O, hashing, mapped-image validation, and memory patching.
@@ -56,6 +58,7 @@ python tools/test-controller-pause.py out/winmm-test.dll
 python tools/test-keyboard-mouse-page.py out/winmm-test.dll /path/to/media/UI.zip
 python tools/test-custom-radio.py out/winmm-test.dll
 python tools/test-photo-quick-scan.py out/winmm-test.dll
+python tools/test-car-preview-scale.py out/winmm-test.dll
 ```
 
 `test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the

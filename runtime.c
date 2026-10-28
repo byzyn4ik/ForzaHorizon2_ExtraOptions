@@ -5,6 +5,8 @@
 #include "features/controller_pause.h"
 #include "features/radio_station.h"
 #include "features/photo_scan.h"
+#include "features/car_preview_rebuild.h"
+#include "features/car_previews.h"
 #include "features/video_settings.h"
 #include "logging.h"
 #include "patch_engine.h"
@@ -109,6 +111,11 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         // Photo mode RB car scan ([PhotoMode] QuickCarScan; off by default).
         if (options.photo_quick_scan) {
             photo_scan_install(game_image);
+        }
+        // Bigger garage thumbnails ([Graphics] CarPreviewScale 2-4; 1, the default, is off).
+        if (options.car_preview_scale > 1 &&
+            car_previews_install(game_image, (unsigned)options.car_preview_scale)) {
+            car_preview_rebuild_install(game_image);
         }
     }
     return initialized;

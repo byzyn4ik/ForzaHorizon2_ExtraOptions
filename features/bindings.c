@@ -11,7 +11,7 @@ typedef struct {
         {2, VK_F2}, {0, VK_ESCAPE}, {0x80, 0}, {0x80, 0}, {4, 0}, {8, 0}, {1, 0}, {1, 0},          \
             {0x20, 0}, {0x4000, 0}, {                                                              \
             0x20, VK_TAB                                                                           \
-        }, {0, VK_F1}, {0x8000, VK_TAB}, {0x4000, 0}, {0, VK_F9}, {0, VK_F7}, {0, VK_F6}                                                                              \
+        }, {0, VK_F1}, {0x8000, VK_TAB}, {0x4000, 0}, {0, VK_F9}, {0, VK_F7}, {0, VK_F6}, {0, VK_F8}                                                                              \
     }
 static const Binding defaults[BIND_COUNT] = DEFAULT_BINDINGS;
 static Binding bindings[BIND_COUNT] = DEFAULT_BINDINGS;
@@ -19,7 +19,7 @@ static const char *const actions[BIND_COUNT] = {
     "Autodrive",     "CancelAutodrive", "Headlights",        "Roof",
     "SignalLeft",    "SignalRight",     "Hazards",           "PhotoMode",
     "ShowroomPhoto", "ReturnToGarage",  "JumpToManufacturer", "ToggleUI", "RimJumpToManufacturer", "CarMeetPhoto",
-    "RadioStation", "RadioNext", "RadioRestart"};
+    "RadioStation", "RadioNext", "RadioRestart", "RebuildCarPreviews"};
 
 typedef struct {
     const char *name;
