@@ -78,6 +78,7 @@ COMMON_SOURCES = [
     "features/kbm_config.c",
     "features/controller_pause.c",
     "features/radio_station.c",
+    "features/photo_scan.c",
     "features/offline_events.c",
     "features/custom_showcases.c",
     "features/offline_event_division.c",

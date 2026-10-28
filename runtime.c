@@ -4,6 +4,7 @@
 #include "features/plugins.h"
 #include "features/controller_pause.h"
 #include "features/radio_station.h"
+#include "features/photo_scan.h"
 #include "features/video_settings.h"
 #include "logging.h"
 #include "patch_engine.h"
@@ -105,6 +106,10 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         }
         // Custom radio station ([CustomRadio]; off by default).
         radio_station_install(game_image, settings_directory);
+        // Photo mode RB car scan ([PhotoMode] QuickCarScan; off by default).
+        if (options.photo_quick_scan) {
+            photo_scan_install(game_image);
+        }
     }
     return initialized;
 }

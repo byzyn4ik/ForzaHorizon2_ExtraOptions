@@ -55,6 +55,7 @@ python tools/test-keyboard-mouse.py out/winmm-test.dll
 python tools/test-controller-pause.py out/winmm-test.dll
 python tools/test-keyboard-mouse-page.py out/winmm-test.dll /path/to/media/UI.zip
 python tools/test-custom-radio.py out/winmm-test.dll
+python tools/test-photo-quick-scan.py out/winmm-test.dll
 ```
 
 `test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the

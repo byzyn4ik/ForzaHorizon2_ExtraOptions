@@ -100,5 +100,6 @@ typedef struct {
     int menu_turbo_interval_ms;
     int all_transmission_swaps;
     int controller_pause_on_unplug_only;
+    int photo_quick_scan;
 } ModOptions;
 #endif

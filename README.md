@@ -28,6 +28,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - VIP status & "Treasure Map" unlocks.
  - Toggle for 4K liveries w/ enhanced sampling.
  - Unrestricted Photo Mode.
+ - Quick car scan in photo mode, ported from Forza Horizon 6 (optional, off by default).
  - "Return to Garage" button in the pause menu.
  - Aero tuning without equipping Forza Aero parts.
  - New rim style category with all aftermarket rims.
@@ -120,6 +121,14 @@ The files play in folder order as an extra station on the game's own radio, so t
 | `PcmDecode` | 1 | 0 hands the MP3s to the game's FMOD decoder instead. |
 
 Keys are in `[Bindings]`: `RadioStation` tunes to the station (F9), `RadioNext` skips to the next track (F7) and `RadioRestart` restarts the track, or goes to the previous one within 3 seconds of its start (F6). Their Xbox bindings are `None` by default.
+
+### Quick Car Scan
+Off by default. A port of Forza Horizon 6's quick car scan: RB in photo mode credits the cars in view to the photo collection without taking a picture:
+```ini
+[PhotoMode]
+QuickCarScan=1
+```
+RB (shown as "Scan cars" in the help bar) opens the game's own photo analysis for the current camera: the same car detection, payout and "Cars photographed" result as after a real photo, but nothing is captured or saved. It answers RB only in the camera and hidden-UI views; RB keeps its usual job in the effects panel and before saving.
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.
