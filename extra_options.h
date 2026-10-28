@@ -102,5 +102,6 @@ typedef struct {
     int controller_pause_on_unplug_only;
     int photo_quick_scan;
     int car_preview_scale;
+    int exit_game;
 } ModOptions;
 #endif

@@ -8,6 +8,7 @@
 #include "features/car_preview_rebuild.h"
 #include "features/car_previews.h"
 #include "features/map_zoom.h"
+#include "features/exit_game.h"
 #include "features/video_settings.h"
 #include "logging.h"
 #include "patch_engine.h"
@@ -122,6 +123,10 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         }
         // Pause map zoom (installs nothing while every percentage is 100, the default).
         map_zoom_install(game_image);
+        // [Frontend] ExitGame (off by default): Car Packs closes the game.
+        if (options.exit_game) {
+            exit_game_install(game_image);
+        }
     }
     return initialized;
 }

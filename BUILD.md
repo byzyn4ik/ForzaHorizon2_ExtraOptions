@@ -61,6 +61,7 @@ python tools/test-photo-quick-scan.py out/winmm-test.dll
 python tools/test-car-preview-scale.py out/winmm-test.dll
 python tools/test-fps-meter.py out/winmm-test.dll
 python tools/test-map-zoom.py out/winmm-test.dll
+python tools/test-exit-game.py out/winmm-test.dll <game>/Mount/media/UI.zip
 ```
 
 `test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the

@@ -32,6 +32,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - Unrestricted Photo Mode.
  - Quick car scan in photo mode, ported from Forza Horizon 6 (optional, off by default).
  - "Return to Garage" button in the pause menu.
+ - Exit Game in the pause menu (optional, off by default).
  - Aero tuning without equipping Forza Aero parts.
  - New rim style category with all aftermarket rims.
  - Toggle for having the minimap follow the orbit camera.
@@ -160,6 +161,13 @@ MapIslandStartZoom=100  ; the same for Storm Island
 MapIslandMaxZoomOut=175
 ```
 Zooming keeps the game's speed in metres per second, and panning keeps its speed at a given distance. The island has its own values because its map texture ends close to the island. With all four at 100 nothing is changed.
+
+### Exit Game
+Off by default. The game has no way to quit from its menus. With this on, the pause menu's Home tab gets an Exit Game tile (the Quit icon, a caption in the game's language) beside Online Road Trip, which becomes a square tile, and choosing it closes the game:
+```ini
+[Frontend]
+ExitGame=1
+```
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.
