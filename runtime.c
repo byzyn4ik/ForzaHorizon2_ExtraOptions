@@ -3,6 +3,7 @@
 #include "features/addons.h"
 #include "features/plugins.h"
 #include "features/controller_pause.h"
+#include "features/radio_station.h"
 #include "features/video_settings.h"
 #include "logging.h"
 #include "patch_engine.h"
@@ -102,6 +103,8 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         if (options.controller_pause_on_unplug_only) {
             controller_pause_install(game_image);
         }
+        // Custom radio station ([CustomRadio]; off by default).
+        radio_station_install(game_image, settings_directory);
     }
     return initialized;
 }

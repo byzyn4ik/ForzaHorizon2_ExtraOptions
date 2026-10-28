@@ -16,6 +16,7 @@ EXPORTS
     WritePrivateProfileStringW
     VirtualAlloc
     VirtualFree
+    GetPrivateProfileIntW
     WriteFile
     ReadProcessMemory
     VirtualQuery

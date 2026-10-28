@@ -34,6 +34,9 @@ the cinematic transition calls the game's existing white-flash routine.
 Keyboard & mouse (off by default) loads User32 and GDI32 lazily when enabled and
 reads Raw Input on its own thread through a message-only window; while its menu
 pointer is shown it sets the game window's class cursor.
+The custom radio station (off by default) loads User32 (for its keys) and the
+system MP3 codec (msacm32) lazily when enabled; with PcmDecode=1 one worker
+thread decodes the next tracks ahead.
 
 Both adapters initialize synchronously in `DllMain`. Startup performs simple
 configuration I/O, hashing, mapped-image validation, and memory patching.
@@ -51,9 +54,10 @@ python build.py /absolute/path/to/zig.exe --azimuth --test --output out/winmm-te
 python tools/test-keyboard-mouse.py out/winmm-test.dll
 python tools/test-controller-pause.py out/winmm-test.dll
 python tools/test-keyboard-mouse-page.py out/winmm-test.dll /path/to/media/UI.zip
+python tools/test-custom-radio.py out/winmm-test.dll
 ```
 
-The last one builds the Settings hub and the KEYBOARD & MOUSE page from the
+`test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the
 game's own `A_PauseOptions.xaml` and `A_VideoOptions.xaml` (read from the
 game's `media/UI.zip`) and round-trips options and key bindings through
 `[KeyboardMouse]`.
