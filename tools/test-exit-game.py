@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from ctypes import wintypes
 
-FIELD = 41  # ModOptions.exit_game (int index)
+FIELD = 44  # ModOptions.exit_game (int index)
 dll = ctypes.WinDLL(str(pathlib.Path(sys.argv[1]).resolve()))
 dll.Fh2TweaksStatus.restype = ctypes.c_char_p
 dll.Fh2TestReadOptions.argtypes = [wintypes.LPCWSTR, ctypes.c_void_p]

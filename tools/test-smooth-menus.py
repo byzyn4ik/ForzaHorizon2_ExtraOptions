@@ -10,7 +10,7 @@ import sys
 import tempfile
 from ctypes import wintypes
 
-FIELD = 41  # ModOptions.smooth_menus (int index)
+FIELD = 48  # ModOptions.smooth_menus (int index)
 IMAGE_SIZE = 0x3a18000
 VTABLE, NAME, NAME_TEXT, DEFAULT, SERIALIZE = 0x2eb98d0, 0x13073b0, 0x22372a8, 0x130bb50, 0x130ab00
 NAME_CODE = bytes.fromhex('488d05f1fef200c3')

@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ElementTree
 import zipfile
 from ctypes import wintypes
 
-FIELDS = 41  # ModOptions.world_menu, world_time, world_weather (int indices)
+FIELDS = 45  # ModOptions.world_menu, world_time, world_weather (int indices)
 WORLD_TIME_CHOICES = 16  # CHOICES_WORLD_TIME in features/video_options.c
 dll = ctypes.WinDLL(str(pathlib.Path(sys.argv[1]).resolve()))
 dll.Fh2TweaksStatus.restype = ctypes.c_char_p
