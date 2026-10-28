@@ -85,6 +85,7 @@ COMMON_SOURCES = [
     "features/exit_game.c",
     "features/time_weather.c",
     "features/world_menu.c",
+    "features/smooth_menus.c",
     "features/offline_events.c",
     "features/custom_showcases.c",
     "features/offline_event_division.c",

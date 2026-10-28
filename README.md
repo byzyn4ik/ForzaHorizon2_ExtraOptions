@@ -31,6 +31,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - Sharper garage car pictures (optional, off by default).
  - Unrestricted Photo Mode.
  - Quick car scan in photo mode, ported from Forza Horizon 6 (optional, off by default).
+ - Smooth menus: menus, replays and photo mode at up to 60 FPS instead of 30 (optional, off by default).
  - "Return to Garage" button in the pause menu.
  - Exit Game in the pause menu (optional, off by default).
  - Time of day and weather for the open world from a World tile in the pause menu (optional, off by default).
@@ -185,6 +186,14 @@ TimeOfDay=game
 Weather=game
 ```
 TimeOfDay takes game, sunrise, midday, sunset or midnight; Weather takes game, sunny, wet, rain or storm. The [World] values are used only while WorldMenu is 1.
+
+### Smooth Menus
+Off by default. The game's render scenarios run menus, replays and photo mode at 30 FPS, as on the console. This raises them to 60:
+```ini
+[Graphics]
+SmoothMenus=1
+```
+Scenarios that already run at 60 (driving) are unchanged, and the frame rate is still limited by Azimuth's own frame rate setting: at 30 FPS in Azimuth nothing changes. The game reads the scenarios at startup, so restart the game after changing it.
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.

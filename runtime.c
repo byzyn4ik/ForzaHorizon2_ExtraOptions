@@ -9,6 +9,7 @@
 #include "features/car_previews.h"
 #include "features/map_zoom.h"
 #include "features/exit_game.h"
+#include "features/smooth_menus.h"
 #include "features/video_settings.h"
 #include "features/world_menu.h"
 #include "logging.h"
@@ -132,6 +133,10 @@ int runtime_initialize(unsigned char *game_image, const wchar_t *executable_path
         // day and weather hooks; nothing is hooked while it is off.
         if (options.world_menu) {
             world_menu_install(game_image, options.world_time, options.world_weather);
+        }
+        // Menu render scenarios at up to 60 FPS ([Graphics] SmoothMenus; off by default).
+        if (options.smooth_menus) {
+            smooth_menus_install(game_image);
         }
     }
     return initialized;

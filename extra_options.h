@@ -104,5 +104,6 @@ typedef struct {
     int car_preview_scale;
     int exit_game;
     int world_menu, world_time, world_weather;
+    int smooth_menus;
 } ModOptions;
 #endif
