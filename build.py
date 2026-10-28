@@ -231,6 +231,7 @@ def build(compiler, output, directory, options):
             "features/kbm_pitch.c",
             "features/kbm_menu.c",
             "features/kbm_rebind.c",
+            "features/monitor_bootstrap.c",
         ]
         if options.azimuth
         else ["adapters/mezcal.c"]

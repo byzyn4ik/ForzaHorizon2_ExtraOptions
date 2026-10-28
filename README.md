@@ -36,6 +36,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - Toggle for having the minimap follow the orbit camera.
  - Bypass for Azimuth's save data checks.
  - Custom Gamerpic support.
+ - FPS counter and performance log (optional, off by default).
 
 # Installation
 
@@ -138,6 +139,15 @@ Off by default. The pictures of your own cars in My Cars and the car strip are r
 CarPreviewScale=2   ; 1 (default) = console size, 2-4 = that many times larger
 ```
 2 is pixel for pixel in the My Cars panel at 2160p. It applies to pictures the game makes after startup (a car bought, painted or upgraded). To redraw the pictures you already have, press F8 (`[Bindings]` `RebuildCarPreviews`): every car with a saved picture is rendered again through the game's own background save. Stock cars use the game's packaged pictures and are not affected. Larger scales make the save larger (2 has four times the pixels).
+
+### FPS Counter
+Off by default. Put `fh2-monitor.dll` in a `monitor` folder beside `FH2_ExtraOptions.ini` (Azimuth 1.0.2) and add:
+```ini
+[Monitor]
+ShowFps=1   ; 0 off, 1 FPS, 2 FPS with frame times
+PerfLog=0   ; 1 writes fh2-perf.csv beside the INI
+```
+`ShowFps=1` shows the FPS, GPU load and video memory in the top-right corner. `ShowFps=2` adds the frame time, the 1% low and the GPU frame time. `PerfLog=1` appends one line per second to `fh2-perf.csv`: FPS, average, 99th percentile and longest frame times, the 1% low and the GPU frame time. The counter is drawn by the game's own swap chain on its presenting queue and follows HDR brightness.
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.

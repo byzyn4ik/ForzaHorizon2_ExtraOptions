@@ -59,12 +59,29 @@ python tools/test-keyboard-mouse-page.py out/winmm-test.dll /path/to/media/UI.zi
 python tools/test-custom-radio.py out/winmm-test.dll
 python tools/test-photo-quick-scan.py out/winmm-test.dll
 python tools/test-car-preview-scale.py out/winmm-test.dll
+python tools/test-fps-meter.py out/winmm-test.dll
 ```
 
 `test-keyboard-mouse-page.py` builds the Settings hub and the KEYBOARD & MOUSE page from the
 game's own `A_PauseOptions.xaml` and `A_VideoOptions.xaml` (read from the
 game's `media/UI.zip`) and round-trips options and key bindings through
 `[KeyboardMouse]`.
+
+## FPS counter
+
+The counter is a separate DLL, loaded by the mod only when `[Monitor]` asks
+for it:
+
+```text
+python monitor/build-monitor.py /absolute/path/to/zig.exe --output out/monitor
+```
+
+Install `out/monitor/fh2-monitor.dll` as `<game>/monitor/fh2-monitor.dll`.
+The mod arms one hook in `DllMain` on Azimuth's D3D12CreateDevice import (or
+its GetProcAddress), and loads the monitor right after the first device is
+created, outside the loader lock. The monitor hooks the swap chain's Present,
+Present1 and SetColorSpace1 and the queue's ExecuteCommandLists, and reads GPU
+load and video memory through PDH on one worker thread.
 
 ## Patch data
 

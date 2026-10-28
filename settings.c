@@ -128,7 +128,8 @@ static int known_section(const char *name) {
         text_equal_ignore_case(name, "Graphics") || text_equal_ignore_case(name, "Livery") ||
         text_equal_ignore_case(name, "HUD") || text_equal_ignore_case(name, "Bindings") ||
         text_equal_ignore_case(name, "General") || text_equal_ignore_case(name, "Language") ||
-        text_equal_ignore_case(name, "KeyboardMouse") || text_equal_ignore_case(name, "CustomRadio")) {
+        text_equal_ignore_case(name, "KeyboardMouse") || text_equal_ignore_case(name, "CustomRadio") ||
+        text_equal_ignore_case(name, "Monitor")) {
         return 1;
     }
     for (size_t index = 0; index < setting_count; ++index) {
@@ -340,6 +341,17 @@ static int parse_ini(char *text, ModOptions *options) {
         }
         if (text_equal_ignore_case(section, "CustomRadio")) {
             if (!custom_radio_valid(key, value)) {
+                goto invalid;
+            }
+            continue;
+        }
+        /* [Monitor] (monitor/fh2-monitor.dll reads it; off by default): ShowFps
+           0 off, 1 FPS, 2 with frame times; PerfLog 1 writes fh2-perf.csv. */
+        if (text_equal_ignore_case(section, "Monitor")) {
+            int show = text_equal_ignore_case(key, "ShowFps");
+            if ((!show && !text_equal_ignore_case(key, "PerfLog")) ||
+                (!text_equal_ignore_case(value, "0") && !text_equal_ignore_case(value, "1") &&
+                 !(show && text_equal_ignore_case(value, "2")))) {
                 goto invalid;
             }
             continue;
