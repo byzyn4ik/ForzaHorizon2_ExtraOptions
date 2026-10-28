@@ -17,6 +17,7 @@ An individual or group of people is trying to use Forza Horizon 2 and the mod's 
  - Lights, hazards, and turn-signal toggles for all cars.
  - New rim style category with all stock rims.
  - Custom spawn locations.
+ - Customizable pause map zoom (optional, off by default).
  - "mediapc" modding folder support.
  - Native keyboard & mouse (optional, off by default).
  - Custom radio station with your own MP3s (optional, off by default).
@@ -148,6 +149,17 @@ ShowFps=1   ; 0 off, 1 FPS, 2 FPS with frame times
 PerfLog=0   ; 1 writes fh2-perf.csv beside the INI
 ```
 `ShowFps=1` shows the FPS, GPU load and video memory in the top-right corner. `ShowFps=2` adds the frame time, the 1% low and the GPU frame time. `PerfLog=1` appends one line per second to `fh2-perf.csv`: FPS, average, 99th percentile and longest frame times, the 1% low and the GPU frame time. The counter is drawn by the game's own swap chain on its presenting queue and follows HDR brightness.
+
+### Map Zoom
+Off by default. The pause map always opens at its farthest zoom-out (2500 m on the mainland, 1100 m on Storm Island). These set where it opens and how far it can zoom out, in percent of the game's own distances:
+```ini
+[Frontend]
+MapStartZoom=150        ; opens at 150% of the game's distance (25-400, default 100)
+MapMaxZoomOut=225       ; can zoom out to 225% (100-400, default 100)
+MapIslandStartZoom=100  ; the same for Storm Island
+MapIslandMaxZoomOut=175
+```
+Zooming keeps the game's speed in metres per second, and panning keeps its speed at a given distance. The island has its own values because its map texture ends close to the island. With all four at 100 nothing is changed.
 
 ### Drift Camera
 The drift camera can be toggled and tweaked in the HUD settings inside the game.

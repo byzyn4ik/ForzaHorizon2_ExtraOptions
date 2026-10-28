@@ -81,6 +81,7 @@ COMMON_SOURCES = [
     "features/photo_scan.c",
     "features/car_previews.c",
     "features/car_preview_rebuild.c",
+    "features/map_zoom.c",
     "features/offline_events.c",
     "features/custom_showcases.c",
     "features/offline_event_division.c",
